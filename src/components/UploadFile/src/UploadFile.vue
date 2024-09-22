@@ -1,12 +1,14 @@
 <template>
-  <div class="upload-file">
+  <div v-if="!disabled" class="upload-file">
     <el-upload
       ref="uploadRef"
       v-model:file-list="fileList"
       :action="uploadUrl"
       :auto-upload="autoUpload"
       :before-upload="beforeUpload"
+      :disabled="disabled"
       :drag="drag"
+      :http-request="httpRequest"
       :limit="props.limit"
       :multiple="props.limit > 1"
       :on-error="excelUploadError"
@@ -15,7 +17,6 @@
       :on-remove="handleRemove"
       :on-success="handleFileSuccess"
       :show-file-list="true"
-      :http-request="httpRequest"
       class="upload-file-uploader"
       name="file"
     >
@@ -31,7 +32,38 @@
           格式为 <b style="color: #f56c6c">{{ fileType.join('/') }}</b> 的文件
         </div>
       </template>
+      <template #file="row">
+        <div class="flex items-center">
+          <span>{{ row.file.name }}</span>
+          <div class="ml-10px">
+            <el-link
+              :href="row.file.url"
+              :underline="false"
+              download
+              target="_blank"
+              type="primary"
+            >
+              下载
+            </el-link>
+          </div>
+          <div class="ml-10px">
+            <el-button link type="danger" @click="handleRemove(row.file)"> 删除</el-button>
+          </div>
+        </div>
+      </template>
     </el-upload>
+  </div>
+
+  <!-- 上传操作禁用时 -->
+  <div v-if="disabled" class="upload-file">
+    <div v-for="(file, index) in fileList" :key="index" class="flex items-center file-list-item">
+      <span>{{ file.name }}</span>
+      <div class="ml-10px">
+        <el-link :href="file.url" :underline="false" download target="_blank" type="primary">
+          下载
+        </el-link>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -48,13 +80,13 @@ const emit = defineEmits(['update:modelValue'])
 
 const props = defineProps({
   modelValue: propTypes.oneOfType<string | string[]>([String, Array<String>]).isRequired,
-  title: propTypes.string.def('文件上传'),
   fileType: propTypes.array.def(['doc', 'xls', 'ppt', 'txt', 'pdf']), // 文件类型, 例如['png', 'jpg', 'jpeg']
   fileSize: propTypes.number.def(5), // 大小限制(MB)
   limit: propTypes.number.def(5), // 数量限制
   autoUpload: propTypes.bool.def(true), // 自动上传
   drag: propTypes.bool.def(false), // 拖拽上传
-  isShowTip: propTypes.bool.def(true) // 是否显示提示
+  isShowTip: propTypes.bool.def(true), // 是否显示提示
+  disabled: propTypes.bool.def(false) // 是否禁用上传组件 ==> 非必传（默认为 false）
 })
 
 // ========== 上传相关 ==========
@@ -189,5 +221,10 @@ const emitUpdateModelValue = () => {
 
 :deep(.ele-upload-list__item-content-action .el-link) {
   margin-right: 10px;
+}
+
+.file-list-item {
+  border: 1px dashed var(--el-border-color-darker);
+  border-radius: 8px;
 }
 </style>
