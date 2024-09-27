@@ -35,10 +35,10 @@
     >
       <el-form :model="newMessageForm" size="small" label-width="90px">
         <el-form-item label="消息ID">
-          <el-input v-model="newMessageForm.id" clearable />
+          <el-input v-model="newMessageForm.id" clearable/>
         </el-form-item>
         <el-form-item label="消息名称">
-          <el-input v-model="newMessageForm.name" clearable />
+          <el-input v-model="newMessageForm.name" clearable/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -49,7 +49,6 @@
 </template>
 
 <script lang="ts" setup>
-defineOptions({ name: 'ReceiveTask' })
 const props = defineProps({
   id: String,
   type: String
@@ -120,6 +119,6 @@ watch(
       getBindMessage()
     })
   },
-  { immediate: true }
+  {immediate: true}
 )
 </script>

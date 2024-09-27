@@ -7,7 +7,7 @@
           label="异步前"
           @change="changeTaskAsync"
         />
-        <el-checkbox v-model="taskConfigForm.asyncAfter" label="异步后" @change="changeTaskAsync" />
+        <el-checkbox v-model="taskConfigForm.asyncAfter" label="异步后" @change="changeTaskAsync"/>
         <el-checkbox
           v-model="taskConfigForm.exclusive"
           v-if="taskConfigForm.asyncAfter || taskConfigForm.asyncBefore"
@@ -15,7 +15,7 @@
           @change="changeTaskAsync"
         />
       </el-form-item>
-      <component :is="witchTaskComponent" v-bind="$props" />
+      <component :is="witchTaskComponent" v-bind="$props"/>
     </el-form>
   </div>
 </template>
@@ -25,7 +25,6 @@ import UserTask from './task-components/UserTask.vue'
 import ScriptTask from './task-components/ScriptTask.vue'
 import ReceiveTask from './task-components/ReceiveTask.vue'
 
-defineOptions({ name: 'ElementTaskConfig' })
 
 const props = defineProps({
   id: String,
@@ -65,7 +64,7 @@ watch(
     taskConfigForm.value.asyncAfter = bpmnElement.value?.businessObject?.asyncAfter
     taskConfigForm.value.exclusive = bpmnElement.value?.businessObject?.exclusive
   },
-  { immediate: true }
+  {immediate: true}
 )
 watch(
   () => props.type,
@@ -81,6 +80,6 @@ watch(
       witchTaskComponent.value = ReceiveTask
     }
   },
-  { immediate: true }
+  {immediate: true}
 )
 </script>

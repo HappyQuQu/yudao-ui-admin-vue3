@@ -3,10 +3,10 @@
     <el-form label-width="90px">
       <el-form-item label="回路特性">
         <el-select v-model="loopCharacteristics" @change="changeLoopCharacteristicsType">
-          <el-option label="并行多重事件" value="ParallelMultiInstance" />
-          <el-option label="时序多重事件" value="SequentialMultiInstance" />
-          <el-option label="循环事件" value="StandardLoop" />
-          <el-option label="无" value="Null" />
+          <el-option label="并行多重事件" value="ParallelMultiInstance"/>
+          <el-option label="时序多重事件" value="SequentialMultiInstance"/>
+          <el-option label="循环事件" value="StandardLoop"/>
+          <el-option label="无" value="Null"/>
         </el-select>
       </el-form-item>
       <template
@@ -23,10 +23,10 @@
           />
         </el-form-item>
         <el-form-item label="集合" key="collection" v-show="false">
-          <el-input v-model="loopInstanceForm.collection" clearable @change="updateLoopBase" />
+          <el-input v-model="loopInstanceForm.collection" clearable @change="updateLoopBase"/>
         </el-form-item>
         <el-form-item label="元素变量" key="elementVariable">
-          <el-input v-model="loopInstanceForm.elementVariable" clearable @change="updateLoopBase" />
+          <el-input v-model="loopInstanceForm.elementVariable" clearable @change="updateLoopBase"/>
         </el-form-item>
         <el-form-item label="完成条件" key="completionCondition">
           <el-input
@@ -59,7 +59,7 @@
           v-if="loopInstanceForm.asyncAfter || loopInstanceForm.asyncBefore"
           key="timeCycle"
         >
-          <el-input v-model="loopInstanceForm.timeCycle" clearable @change="updateLoopTimeCycle" />
+          <el-input v-model="loopInstanceForm.timeCycle" clearable @change="updateLoopTimeCycle"/>
         </el-form-item>
       </template>
     </el-form>
@@ -67,7 +67,6 @@
 </template>
 
 <script lang="ts" setup>
-defineOptions({ name: 'ElementMultiInstance' })
 
 const props = defineProps({
   businessObject: Object,
@@ -148,12 +147,12 @@ const changeLoopCharacteristicsType = (type) => {
   if (type === 'SequentialMultiInstance') {
     multiLoopInstance.value = bpmnInstances().moddle.create(
       'bpmn:MultiInstanceLoopCharacteristics',
-      { isSequential: true }
+      {isSequential: true}
     )
   } else {
     multiLoopInstance.value = bpmnInstances().moddle.create(
       'bpmn:MultiInstanceLoopCharacteristics',
-      { collection: '${coll_userList}' }
+      {collection: '${coll_userList}'}
     )
   }
   bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
@@ -222,12 +221,12 @@ const updateLoopBase = () => {
 }
 // 各异步状态
 const updateLoopAsync = (key) => {
-  const { asyncBefore, asyncAfter } = loopInstanceForm.value
+  const {asyncBefore, asyncAfter} = loopInstanceForm.value
   let asyncAttr = Object.create(null)
   if (!asyncBefore && !asyncAfter) {
     // this.$set(this.loopInstanceForm, "exclusive", false);
     loopInstanceForm.value['exclusive'] = false
-    asyncAttr = { asyncBefore: false, asyncAfter: false, exclusive: false, extensionElements: null }
+    asyncAttr = {asyncBefore: false, asyncAfter: false, exclusive: false, extensionElements: null}
   } else {
     asyncAttr[key] = loopInstanceForm.value[key]
   }
@@ -249,6 +248,6 @@ watch(
     bpmnElement.value = bpmnInstances().bpmnElement
     getElementLoop(val)
   },
-  { immediate: true }
+  {immediate: true}
 )
 </script>

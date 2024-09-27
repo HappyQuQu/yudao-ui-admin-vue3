@@ -10,6 +10,8 @@
         >
           如何实现实现会签、或签？
         </el-link>
+        {{ needProps }}
+        {{ model }}
         <el-form-item label="流程标识" prop="id">
           <el-input
             v-model="needProps.id"
@@ -29,26 +31,27 @@
       </div>
       <div v-else>
         <el-form-item label="ID">
-          <el-input v-model="elementBaseInfo.id" clearable @change="updateBaseInfo('id')" />
+          <el-input v-model="elementBaseInfo.id" clearable @change="updateBaseInfo('id')"/>
         </el-form-item>
         <el-form-item label="名称">
-          <el-input v-model="elementBaseInfo.name" clearable @change="updateBaseInfo('name')" />
+          <el-input v-model="elementBaseInfo.name" clearable @change="updateBaseInfo('name')"/>
         </el-form-item>
       </div>
     </el-form>
   </div>
 </template>
 <script lang="ts" setup>
-defineOptions({ name: 'ElementBaseInfo' })
 
 const props = defineProps({
   businessObject: {
     type: Object,
-    default: () => {}
+    default: () => {
+    }
   },
   model: {
     type: Object,
-    default: () => {}
+    default: () => {
+    }
   }
 })
 const needProps = ref<any>({})
@@ -58,8 +61,8 @@ const elementBaseInfo = ref<any>({})
 // const forms = ref([])
 // 流程模型的校验
 const rules = reactive({
-  id: [{ required: true, message: '流程标识不能为空', trigger: 'blur' }],
-  name: [{ required: true, message: '流程名称不能为空', trigger: 'blur' }]
+  id: [{required: true, message: '流程标识不能为空', trigger: 'blur'}],
+  name: [{required: true, message: '流程名称不能为空', trigger: 'blur'}]
 })
 
 const bpmnInstances = () => (window as any)?.bpmnInstances
@@ -122,7 +125,7 @@ const updateBaseInfo = (key) => {
   //   // di: { id: `${elementBaseInfo.value[key]}_di` }
   // }
   console.log(elementBaseInfo, 'elementBaseInfo11111111111')
-  needProps.value = { ...elementBaseInfo.value, ...needProps.value }
+  needProps.value = {...elementBaseInfo.value, ...needProps.value}
 
   if (key === 'id') {
     console.log('jinru')
@@ -131,7 +134,7 @@ const updateBaseInfo = (key) => {
     console.log(toRaw(bpmnElement.value), 'bpmnElement')
     bpmnInstances().modeling.updateProperties(toRaw(bpmnElement.value), {
       id: elementBaseInfo.value[key],
-      di: { id: `${elementBaseInfo.value[key]}_di` }
+      di: {id: `${elementBaseInfo.value[key]}_di`}
     })
   } else {
     console.log(attrObj, 'attrObj')

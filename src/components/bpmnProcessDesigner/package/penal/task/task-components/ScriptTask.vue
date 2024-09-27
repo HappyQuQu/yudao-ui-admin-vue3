@@ -10,8 +10,8 @@
     </el-form-item>
     <el-form-item label="脚本类型">
       <el-select v-model="scriptTaskForm.scriptType">
-        <el-option label="内联脚本" value="inline" />
-        <el-option label="外部资源" value="external" />
+        <el-option label="内联脚本" value="inline"/>
+        <el-option label="外部资源" value="external"/>
       </el-select>
     </el-form-item>
     <el-form-item label="脚本" v-show="scriptTaskForm.scriptType === 'inline'">
@@ -45,7 +45,6 @@
 </template>
 
 <script lang="ts" setup>
-defineOptions({ name: 'ScriptTask' })
 const props = defineProps({
   id: String,
   type: String
@@ -94,6 +93,6 @@ watch(
       resetTaskForm()
     })
   },
-  { immediate: true }
+  {immediate: true}
 )
 </script>

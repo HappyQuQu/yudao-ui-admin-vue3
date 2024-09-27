@@ -16,7 +16,7 @@
     <!--      </el-select>-->
     <!--    </el-form-item>-->
     <el-form-item label="到期时间">
-      <el-input v-model="userTaskForm.dueDate" clearable @change="updateElementTask('dueDate')" />
+      <el-input v-model="userTaskForm.dueDate" clearable @change="updateElementTask('dueDate')"/>
     </el-form-item>
     <el-form-item label="跟踪时间">
       <el-input
@@ -26,11 +26,12 @@
       />
     </el-form-item>
     <el-form-item label="优先级">
-      <el-input v-model="userTaskForm.priority" clearable @change="updateElementTask('priority')" />
+      <el-input v-model="userTaskForm.priority" clearable @change="updateElementTask('priority')"/>
     </el-form-item>
     友情提示：任务的分配规则，使用
     <router-link target="_blank" :to="{ path: '/bpm/manager/model' }"
-      ><el-link type="danger">流程模型</el-link>
+    >
+      <el-link type="danger">流程模型</el-link>
     </router-link>
     下的【分配规则】替代，提供指定角色、部门负责人、部门成员、岗位、工作组、自定义脚本等 7
     种维护的任务分配维度，更加灵活！
@@ -38,7 +39,6 @@
 </template>
 
 <script lang="ts" setup>
-defineOptions({ name: 'UserTask' })
 const props = defineProps({
   id: String,
   type: String
@@ -90,7 +90,7 @@ watch(
       resetTaskForm()
     })
   },
-  { immediate: true }
+  {immediate: true}
 )
 onBeforeUnmount(() => {
   bpmnElement.value = null

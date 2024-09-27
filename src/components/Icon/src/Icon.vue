@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { propTypes } from '@/utils/propTypes'
+import {propTypes} from '@/utils/propTypes'
 import Iconify from '@purge-icons/generated'
-import { useDesign } from '@/hooks/web/useDesign'
+import {useDesign} from '@/hooks/web/useDesign'
 
-defineOptions({ name: 'Icon' })
+defineOptions({name: 'Icon'})
 
-const { getPrefixCls } = useDesign()
+const {getPrefixCls} = useDesign()
 
 const prefixCls = getPrefixCls('icon')
-
+console.log("iiiiiiii----" + prefixCls.toString())
 const props = defineProps({
   // icon name
   icon: propTypes.string,
@@ -29,7 +29,7 @@ const symbolId = computed(() => {
 })
 
 const getIconifyStyle = computed(() => {
-  const { color, size } = props
+  const {color, size} = props
   return {
     fontSize: `${size}px`,
     height: '1em',
@@ -38,7 +38,7 @@ const getIconifyStyle = computed(() => {
 })
 
 const getSvgClass = computed(() => {
-  const { svgClass } = props
+  const {svgClass} = props
   return `iconify ${svgClass}`
 })
 
@@ -76,7 +76,7 @@ watch(
 <template>
   <ElIcon :class="prefixCls" :color="color" :size="size">
     <svg v-if="isLocal" :class="getSvgClass" aria-hidden="true">
-      <use :xlink:href="symbolId" />
+      <use :xlink:href="symbolId"/>
     </svg>
 
     <span v-else ref="elRef" :class="$attrs.class" :style="getIconifyStyle">

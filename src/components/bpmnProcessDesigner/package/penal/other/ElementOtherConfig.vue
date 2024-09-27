@@ -17,7 +17,6 @@
 </template>
 
 <script lang="ts" setup>
-defineOptions({ name: 'ElementOtherConfig' })
 const props = defineProps({
   id: String
 })
@@ -26,7 +25,7 @@ const bpmnElement = ref()
 const bpmnInstances = () => (window as any).bpmnInstances
 const updateDocumentation = () => {
   ;(bpmnElement.value && bpmnElement.value.id === props.id) ||
-    (bpmnElement.value = bpmnInstances().elementRegistry.get(props.id))
+  (bpmnElement.value = bpmnInstances().elementRegistry.get(props.id))
   const documentations = bpmnInstances().bpmnFactory.create('bpmn:Documentation', {
     text: documentation.value
   })
@@ -50,6 +49,6 @@ watch(
       documentation.value = ''
     }
   },
-  { immediate: true }
+  {immediate: true}
 )
 </script>

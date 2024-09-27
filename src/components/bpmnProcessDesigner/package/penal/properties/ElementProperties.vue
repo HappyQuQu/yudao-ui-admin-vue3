@@ -1,15 +1,15 @@
 <template>
   <div class="panel-tab__content">
     <el-table :data="elementPropertyList" max-height="240" fit border>
-      <el-table-column label="序号" width="50px" type="index" />
-      <el-table-column label="属性名" prop="name" min-width="100px" show-overflow-tooltip />
-      <el-table-column label="属性值" prop="value" min-width="100px" show-overflow-tooltip />
+      <el-table-column label="序号" width="50px" type="index"/>
+      <el-table-column label="属性名" prop="name" min-width="100px" show-overflow-tooltip/>
+      <el-table-column label="属性值" prop="value" min-width="100px" show-overflow-tooltip/>
       <el-table-column label="操作" width="110px">
         <template #default="scope">
           <el-button link @click="openAttributesForm(scope.row, scope.$index)" size="small">
             编辑
           </el-button>
-          <el-divider direction="vertical" />
+          <el-divider direction="vertical"/>
           <el-button
             link
             size="small"
@@ -39,10 +39,10 @@
     >
       <el-form :model="propertyForm" label-width="80px" ref="attributeFormRef">
         <el-form-item label="属性名：" prop="name">
-          <el-input v-model="propertyForm.name" clearable />
+          <el-input v-model="propertyForm.name" clearable/>
         </el-form-item>
         <el-form-item label="属性值：" prop="value">
-          <el-input v-model="propertyForm.value" clearable />
+          <el-input v-model="propertyForm.value" clearable/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -54,8 +54,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ElMessageBox } from 'element-plus'
-defineOptions({ name: 'ElementProperties' })
+import {ElMessageBox} from 'element-plus'
+
 const props = defineProps({
   id: String,
   type: String
@@ -123,7 +123,7 @@ const removeAttributes = (attr, index) => {
 }
 const saveAttribute = () => {
   console.log(propertyForm.value, 'propertyForm.value')
-  const { name, value } = propertyForm.value
+  const {name, value} = propertyForm.value
   if (editingPropertyIndex.value !== -1) {
     bpmnInstances().modeling.updateModdleProperties(
       toRaw(bpmnElement.value),
@@ -164,6 +164,6 @@ watch(
       val && val.length && resetAttributesList()
     }
   },
-  { immediate: true }
+  {immediate: true}
 )
 </script>
