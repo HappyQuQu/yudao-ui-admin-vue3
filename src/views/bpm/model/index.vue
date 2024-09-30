@@ -1,5 +1,5 @@
 <template>
-  <doc-alert title="工作流手册" url="https://doc.iocoder.cn/bpm/" />
+  <doc-alert title="工作流手册" url="https://doc.iocoder.cn/bpm/"/>
 
   <ContentWrap>
     <!-- 搜索工作栏 -->
@@ -44,18 +44,26 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
-        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
+        <el-button @click="handleQuery">
+          <Icon icon="ep:search" class="mr-5px"/>
+          搜索
+        </el-button>
+        <el-button @click="resetQuery">
+          <Icon icon="ep:refresh" class="mr-5px"/>
+          重置
+        </el-button>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['bpm:model:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px" /> 新建流程
+          <Icon icon="ep:plus" class="mr-5px"/>
+          新建流程
         </el-button>
         <el-button type="success" plain @click="openImportForm" v-hasPermi="['bpm:model:import']">
-          <Icon icon="ep:upload" class="mr-5px" /> 导入流程
+          <Icon icon="ep:upload" class="mr-5px"/>
+          导入流程
         </el-button>
       </el-form-item>
     </el-form>
@@ -64,7 +72,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list">
-      <el-table-column label="流程标识" align="center" prop="key" width="200" />
+      <el-table-column label="流程标识" align="center" prop="key" width="200"/>
       <el-table-column label="流程名称" align="center" prop="name" width="200">
         <template #default="scope">
           <el-button type="primary" link @click="handleBpmnDetail(scope.row)">
@@ -74,7 +82,7 @@
       </el-table-column>
       <el-table-column label="流程分类" align="center" prop="category" width="100">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.BPM_MODEL_CATEGORY" :value="scope.row.category" />
+          <dict-tag :type="DICT_TYPE.BPM_MODEL_CATEGORY" :value="scope.row.category"/>
         </template>
       </el-table-column>
       <el-table-column label="表单信息" align="center" prop="formType" width="200">
@@ -122,7 +130,7 @@
         <el-table-column
           label="激活状态"
           align="center"
-          prop="processDefinition.version"
+          prop="processDefinition.suspensionState"
           width="85"
         >
           <template #default="scope">
@@ -206,14 +214,14 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改流程 -->
-  <ModelForm ref="formRef" @success="getList" />
+  <ModelForm ref="formRef" @success="getList"/>
 
   <!-- 表单弹窗：导入流程 -->
-  <ModelImportForm ref="importFormRef" @success="getList" />
+  <ModelImportForm ref="importFormRef" @success="getList"/>
 
   <!-- 弹窗：表单详情 -->
   <Dialog title="表单详情" v-model="formDetailVisible" width="800">
-    <form-create :rule="formDetailPreview.rule" :option="formDetailPreview.option" />
+    <form-create :rule="formDetailPreview.rule" :option="formDetailPreview.option"/>
   </Dialog>
 
   <!-- 弹窗：流程模型图的预览 -->
@@ -229,20 +237,20 @@
 </template>
 
 <script lang="ts" setup>
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
-import { dateFormatter, formatDate } from '@/utils/formatTime'
-import { MyProcessViewer } from '@/components/bpmnProcessDesigner/package'
+import {DICT_TYPE, getIntDictOptions} from '@/utils/dict'
+import {dateFormatter, formatDate} from '@/utils/formatTime'
+import {MyProcessViewer} from '@/components/bpmnProcessDesigner/package'
 import * as ModelApi from '@/api/bpm/model'
 import * as FormApi from '@/api/bpm/form'
 import ModelForm from './ModelForm.vue'
 import ModelImportForm from '@/views/bpm/model/ModelImportForm.vue'
-import { setConfAndFields2 } from '@/utils/formCreate'
+import {setConfAndFields2} from '@/utils/formCreate'
 
-defineOptions({ name: 'BpmModel' })
+defineOptions({name: 'BpmModel'})
 
 const message = useMessage() // 消息弹窗
-const { t } = useI18n() // 国际化
-const { push } = useRouter() // 路由
+const {t} = useI18n() // 国际化
+const {push} = useRouter() // 路由
 
 const loading = ref(true) // 列表的加载中
 const total = ref(0) // 列表的总页数
@@ -302,7 +310,8 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 更新状态操作 */
@@ -344,7 +353,8 @@ const handleDeploy = async (row) => {
     message.success(t('部署成功'))
     // 刷新列表
     await getList()
-  } catch {}
+  } catch {
+  }
 }
 
 /** 点击任务分配按钮 */
