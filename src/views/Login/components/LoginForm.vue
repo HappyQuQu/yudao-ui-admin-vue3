@@ -184,9 +184,9 @@ const loginData = reactive({
   captchaEnable: import.meta.env.VITE_APP_CAPTCHA_ENABLE,
   tenantEnable: import.meta.env.VITE_APP_TENANT_ENABLE,
   loginForm: {
-    tenantName: '芋道源码',
-    username: 'admin',
-    password: 'admin123',
+    tenantName: import.meta.env.VITE_APP_DEFAULT_LOGIN_TENANT || '',
+    username: import.meta.env.VITE_APP_DEFAULT_LOGIN_USERNAME || '',
+    password: import.meta.env.VITE_APP_DEFAULT_LOGIN_PASSWORD || '',
     captchaVerification: '',
     rememberMe: true // 默认记录我。如果不需要，可手动修改
   }
@@ -249,8 +249,9 @@ const handleLogin = async (params) => {
     if (!data) {
       return
     }
-    loginData.loginForm.captchaVerification = params.captchaVerification
-    const res = await LoginApi.login(loginData.loginForm)
+    const loginDataLoginForm = { ...loginData.loginForm }
+    loginDataLoginForm.captchaVerification = params.captchaVerification
+    const res = await LoginApi.login(loginDataLoginForm)
     if (!res) {
       return
     }
@@ -259,8 +260,8 @@ const handleLogin = async (params) => {
       text: '正在加载系统中...',
       background: 'rgba(0, 0, 0, 0.7)'
     })
-    if (loginData.loginForm.rememberMe) {
-      authUtil.setLoginForm(loginData.loginForm)
+    if (loginDataLoginForm.rememberMe) {
+      authUtil.setLoginForm(loginDataLoginForm)
     } else {
       authUtil.removeLoginForm()
     }
@@ -291,10 +292,16 @@ const doSocialLogin = async (type: number) => {
       await getTenantId()
       // 如果获取不到，则需要弹出提示，进行处理
       if (!authUtil.getTenantId()) {
-        await message.prompt('请输入租户名称', t('common.reminder')).then(async ({ value }) => {
-          const res = await LoginApi.getTenantIdByName(value)
+        try {
+          const data = await message.prompt('请输入租户名称', t('common.reminder'))
+          if (data?.action !== 'confirm') throw 'cancel'
+          const res = await LoginApi.getTenantIdByName(data.value)
           authUtil.setTenantId(res)
-        })
+        } catch (error) {
+          if (error === 'cancel') return
+        } finally {
+          loginLoading.value = false
+        }
       }
     }
     // 计算 redirectUri

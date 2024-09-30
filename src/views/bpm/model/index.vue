@@ -1,5 +1,11 @@
 <template>
-  <doc-alert title="工作流手册" url="https://doc.iocoder.cn/bpm/"/>
+  <doc-alert title="流程设计器（BPMN）" url="https://doc.iocoder.cn/bpm/model-designer-dingding/" />
+  <doc-alert
+    title="流程设计器（钉钉、飞书）"
+    url="https://doc.iocoder.cn/bpm/model-designer-bpmn/"
+  />
+  <doc-alert title="选择审批人、发起人自选" url="https://doc.iocoder.cn/bpm/assignee/" />
+  <doc-alert title="会签、或签、依次审批" url="https://doc.iocoder.cn/bpm/multi-instance/" />
 
   <ContentWrap>
     <!-- 搜索工作栏 -->
@@ -36,34 +42,26 @@
           class="!w-240px"
         >
           <el-option
-            v-for="dict in getIntDictOptions(DICT_TYPE.BPM_MODEL_CATEGORY)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
+            v-for="category in categoryList"
+            :key="category.code"
+            :label="category.name"
+            :value="category.code"
           />
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="handleQuery">
-          <Icon icon="ep:search" class="mr-5px"/>
-          搜索
-        </el-button>
-        <el-button @click="resetQuery">
-          <Icon icon="ep:refresh" class="mr-5px"/>
-          重置
-        </el-button>
+        <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
+        <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
         <el-button
           type="primary"
           plain
           @click="openForm('create')"
           v-hasPermi="['bpm:model:create']"
         >
-          <Icon icon="ep:plus" class="mr-5px"/>
-          新建流程
+          <Icon icon="ep:plus" class="mr-5px" /> 新建流程
         </el-button>
         <el-button type="success" plain @click="openImportForm" v-hasPermi="['bpm:model:import']">
-          <Icon icon="ep:upload" class="mr-5px"/>
-          导入流程
+          <Icon icon="ep:upload" class="mr-5px" /> 导入流程
         </el-button>
       </el-form-item>
     </el-form>
@@ -72,7 +70,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list">
-      <el-table-column label="流程标识" align="center" prop="key" width="200"/>
+      <el-table-column label="流程标识" align="center" prop="key" width="200" />
       <el-table-column label="流程名称" align="center" prop="name" width="200">
         <template #default="scope">
           <el-button type="primary" link @click="handleBpmnDetail(scope.row)">
@@ -80,11 +78,12 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column label="流程分类" align="center" prop="category" width="100">
+      <el-table-column label="流程图标" align="center" prop="icon" width="100">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.BPM_MODEL_CATEGORY" :value="scope.row.category"/>
+          <el-image :src="scope.row.icon" class="w-32px h-32px" />
         </template>
       </el-table-column>
+      <el-table-column label="流程分类" align="center" prop="categoryName" width="100" />
       <el-table-column label="表单信息" align="center" prop="formType" width="200">
         <template #default="scope">
           <el-button
@@ -130,7 +129,7 @@
         <el-table-column
           label="激活状态"
           align="center"
-          prop="processDefinition.suspensionState"
+          prop="processDefinition.version"
           width="85"
         >
           <template #default="scope">
@@ -151,7 +150,7 @@
           </template>
         </el-table-column>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="240" fixed="right">
+      <el-table-column label="操作" align="center" min-width="240" fixed="right">
         <template #default="scope">
           <el-button
             link
@@ -172,10 +171,10 @@
           <el-button
             link
             type="primary"
-            @click="handleAssignRule(scope.row)"
-            v-hasPermi="['bpm:task-assign-rule:query']"
+            @click="handleSimpleDesign(scope.row.id)"
+            v-hasPermi="['bpm:model:update']"
           >
-            分配规则
+            仿钉钉设计流程
           </el-button>
           <el-button
             link
@@ -214,14 +213,14 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改流程 -->
-  <ModelForm ref="formRef" @success="getList"/>
+  <ModelForm ref="formRef" @success="getList" />
 
   <!-- 表单弹窗：导入流程 -->
-  <ModelImportForm ref="importFormRef" @success="getList"/>
+  <ModelImportForm ref="importFormRef" @success="getList" />
 
   <!-- 弹窗：表单详情 -->
   <Dialog title="表单详情" v-model="formDetailVisible" width="800">
-    <form-create :rule="formDetailPreview.rule" :option="formDetailPreview.option"/>
+    <form-create :rule="formDetailPreview.rule" :option="formDetailPreview.option" />
   </Dialog>
 
   <!-- 弹窗：流程模型图的预览 -->
@@ -237,20 +236,20 @@
 </template>
 
 <script lang="ts" setup>
-import {DICT_TYPE, getIntDictOptions} from '@/utils/dict'
-import {dateFormatter, formatDate} from '@/utils/formatTime'
-import {MyProcessViewer} from '@/components/bpmnProcessDesigner/package'
+import { dateFormatter, formatDate } from '@/utils/formatTime'
+import { MyProcessViewer } from '@/components/bpmnProcessDesigner/package'
 import * as ModelApi from '@/api/bpm/model'
 import * as FormApi from '@/api/bpm/form'
 import ModelForm from './ModelForm.vue'
 import ModelImportForm from '@/views/bpm/model/ModelImportForm.vue'
-import {setConfAndFields2} from '@/utils/formCreate'
+import { setConfAndFields2 } from '@/utils/formCreate'
+import { CategoryApi } from '@/api/bpm/category'
 
-defineOptions({name: 'BpmModel'})
+defineOptions({ name: 'BpmModel' })
 
 const message = useMessage() // 消息弹窗
-const {t} = useI18n() // 国际化
-const {push} = useRouter() // 路由
+const { t } = useI18n() // 国际化
+const { push } = useRouter() // 路由
 
 const loading = ref(true) // 列表的加载中
 const total = ref(0) // 列表的总页数
@@ -263,6 +262,7 @@ const queryParams = reactive({
   category: undefined
 })
 const queryFormRef = ref() // 搜索的表单
+const categoryList = ref([]) // 流程分类列表
 
 /** 查询列表 */
 const getList = async () => {
@@ -310,8 +310,7 @@ const handleDelete = async (id: number) => {
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
-  } catch {
-  }
+  } catch {}
 }
 
 /** 更新状态操作 */
@@ -343,6 +342,15 @@ const handleDesign = (row) => {
   })
 }
 
+const handleSimpleDesign = (row) => {
+  push({
+    name: 'SimpleWorkflowDesignEditor',
+    query: {
+      modelId: row.id
+    }
+  })
+}
+
 /** 发布流程 */
 const handleDeploy = async (row) => {
   try {
@@ -353,18 +361,7 @@ const handleDeploy = async (row) => {
     message.success(t('部署成功'))
     // 刷新列表
     await getList()
-  } catch {
-  }
-}
-
-/** 点击任务分配按钮 */
-const handleAssignRule = (row) => {
-  push({
-    name: 'BpmTaskAssignRuleList',
-    query: {
-      modelId: row.id
-    }
-  })
+  } catch {}
 }
 
 /** 跳转到指定流程定义列表 */
@@ -410,7 +407,9 @@ const handleBpmnDetail = async (row) => {
 }
 
 /** 初始化 **/
-onMounted(() => {
-  getList()
+onMounted(async () => {
+  await getList()
+  // 查询流程分类列表
+  categoryList.value = await CategoryApi.getCategorySimpleList()
 })
 </script>

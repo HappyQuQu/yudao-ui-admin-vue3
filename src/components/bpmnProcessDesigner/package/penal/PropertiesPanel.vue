@@ -4,9 +4,8 @@
       <el-collapse-item name="base">
         <!-- class="panel-tab__title" -->
         <template #title>
-          <Icon icon="ep:info-filled"/>
-          常规
-        </template
+          <Icon icon="ep:info-filled" />
+          常规</template
         >
         <ElementBaseInfo
           :id-edit-disabled="idEditDisabled"
@@ -16,77 +15,44 @@
         />
       </el-collapse-item>
       <el-collapse-item name="condition" v-if="elementType === 'Process'" key="message">
-        <template #title>
-          <Icon icon="ep:comment"/>
-          消息与信号
-        </template>
-        <signal-and-massage/>
+        <template #title><Icon icon="ep:comment" />消息与信号</template>
+        <signal-and-massage />
       </el-collapse-item>
       <el-collapse-item name="condition" v-if="conditionFormVisible" key="condition">
-        <template #title>
-          <Icon icon="ep:promotion"/>
-          流转条件
-        </template>
-        <flow-condition :business-object="elementBusinessObject" :type="elementType"/>
+        <template #title><Icon icon="ep:promotion" />流转条件</template>
+        <flow-condition :business-object="elementBusinessObject" :type="elementType" />
       </el-collapse-item>
       <el-collapse-item name="condition" v-if="formVisible" key="form">
-        <template #title>
-          <Icon icon="ep:list"/>
-          表单
-        </template>
-        <!-- <element-form :id="elementId" :type="elementType" /> -->
-        友情提示：使用
-        <router-link :to="{ path: '/bpm/manager/form' }"
-        >
-          <el-link type="danger">流程表单</el-link>
-        </router-link>
-        替代，提供更好的表单设计功能
+        <template #title><Icon icon="ep:list" />表单</template>
+        <element-form :id="elementId" :type="elementType" />
       </el-collapse-item>
       <el-collapse-item name="task" v-if="elementType.indexOf('Task') !== -1" key="task">
-        <template #title>
-          <Icon icon="ep:checked"/>
-          任务
-        </template>
-        <element-task :id="elementId" :type="elementType"/>
+        <template #title><Icon icon="ep:checked" />任务（审批人）</template>
+        <element-task :id="elementId" :type="elementType" />
       </el-collapse-item>
       <el-collapse-item
         name="multiInstance"
         v-if="elementType.indexOf('Task') !== -1"
         key="multiInstance"
       >
-        <template #title>
-          <Icon icon="ep:help-filled"/>
-          多实例
-        </template>
-        <element-multi-instance :business-object="elementBusinessObject" :type="elementType"/>
+        <template #title><Icon icon="ep:help-filled" />多实例（会签配置）</template>
+        <element-multi-instance :business-object="elementBusinessObject" :type="elementType" />
       </el-collapse-item>
       <el-collapse-item name="listeners" key="listeners">
-        <template #title>
-          <Icon icon="ep:bell-filled"/>
-          执行监听器
-        </template>
-        <element-listeners :id="elementId" :type="elementType"/>
+        <template #title><Icon icon="ep:bell-filled" />执行监听器</template>
+        <element-listeners :id="elementId" :type="elementType" />
       </el-collapse-item>
       <el-collapse-item name="taskListeners" v-if="elementType === 'UserTask'" key="taskListeners">
-        <template #title>
-          <Icon icon="ep:bell-filled"/>
-          任务监听器
-        </template>
-        <user-task-listeners :id="elementId" :type="elementType"/>
+        <template #title><Icon icon="ep:bell-filled" />任务监听器</template>
+        <user-task-listeners :id="elementId" :type="elementType" />
       </el-collapse-item>
       <el-collapse-item name="extensions" key="extensions">
-        <template #title>
-          <Icon icon="ep:circle-plus-filled"/>
-          扩展属性
-        </template>
-        <element-properties :id="elementId" :type="elementType"/>
+        <template #title><Icon icon="ep:circle-plus-filled" />扩展属性</template>
+        <element-properties :id="elementId" :type="elementType" />
       </el-collapse-item>
       <el-collapse-item name="other" key="other">
-        <template #title>
-          <Icon icon="ep:promotion"/>
-          其他
-        </template>
-        <element-other-config :id="elementId"/>
+        <template #title><Icon icon="ep:promotion" />其他</template>
+        <element-other-config :id="elementId" />
       </el-collapse-item>
     </el-collapse>
   </div>
@@ -103,6 +69,7 @@ import ElementProperties from './properties/ElementProperties.vue'
 // import ElementForm from './form/ElementForm.vue'
 import UserTaskListeners from './listeners/UserTaskListeners.vue'
 
+defineOptions({ name: 'MyPropertiesPanel' })
 
 /**
  * 侧边栏
@@ -113,8 +80,7 @@ import UserTaskListeners from './listeners/UserTaskListeners.vue'
 const props = defineProps({
   bpmnModeler: {
     type: Object,
-    default: () => {
-    }
+    default: () => {}
   },
   prefix: {
     type: String,
@@ -184,10 +150,10 @@ const getActiveElement = () => {
     initFormOnChanged(null)
   })
   // 监听选择事件，修改当前激活的元素以及表单
-  props.bpmnModeler.on('selection.changed', ({newSelection}) => {
+  props.bpmnModeler.on('selection.changed', ({ newSelection }) => {
     initFormOnChanged(newSelection[0] || null)
   })
-  props.bpmnModeler.on('element.changed', ({element}) => {
+  props.bpmnModeler.on('element.changed', ({ element }) => {
     // 保证 修改 "默认流转路径" 类似需要修改多个元素的事件发生的时候，更新表单的元素与原选中元素不一致。
     if (element && element.id === elementId.value) {
       initFormOnChanged(element)
