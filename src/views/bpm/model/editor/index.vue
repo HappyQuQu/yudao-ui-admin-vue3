@@ -2,40 +2,42 @@
   <ContentWrap>
     <!-- 流程设计器，负责绘制流程等 -->
     <MyProcessDesigner
-      key="designer"
       v-if="xmlString !== undefined"
-      v-model="xmlString"
-      :value="xmlString"
-      v-bind="controlForm"
-      keyboard
+      key="designer"
       ref="processDesigner"
-      @init-finished="initModeler"
+      v-model="xmlString"
       :additionalModel="controlForm.additionalModel"
+      :value="xmlString"
+      keyboard
+      v-bind="controlForm"
       @save="save"
+      @init-finished="initModeler"
     />
     <!-- 流程属性器，负责编辑每个流程节点的属性 -->
     <MyProcessPenal
       key="penal"
       :bpmnModeler="modeler as any"
+      :model="model"
       :prefix="controlForm.prefix"
       class="process-panel"
-      :model="model"
     />
   </ContentWrap>
 </template>
 
 <script lang="ts" setup>
-import { MyProcessDesigner, MyProcessPenal } from '@/components/bpmnProcessDesigner/package'
+import {MyProcessDesigner, MyProcessPenal} from '@/components/bpmnProcessDesigner/package'
 // 自定义元素选中时的弹出菜单（修改 默认任务 为 用户任务）
-import CustomContentPadProvider from '@/components/bpmnProcessDesigner/package/designer/plugins/content-pad'
+import CustomContentPadProvider
+  from '@/components/bpmnProcessDesigner/package/designer/plugins/content-pad'
 // 自定义左侧菜单（修改 默认任务 为 用户任务）
-import CustomPaletteProvider from '@/components/bpmnProcessDesigner/package/designer/plugins/palette'
+import CustomPaletteProvider
+  from '@/components/bpmnProcessDesigner/package/designer/plugins/palette'
 import * as ModelApi from '@/api/bpm/model'
 
-defineOptions({ name: 'BpmModelEditor' })
+defineOptions({name: 'BpmModelEditor'})
 
 const router = useRouter() // 路由
-const { query } = useRoute() // 路由的查询
+const {query} = useRoute() // 路由的查询
 const message = useMessage() // 国际化
 
 const xmlString = ref(undefined) // BPMN XML
@@ -77,7 +79,7 @@ const save = async (bpmnXml: string) => {
 
 /** 关闭按钮 */
 const close = () => {
-  router.push({ path: '/bpm/manager/model' })
+  router.push({path: '/bpm/manager/model'})
 }
 
 /** 初始化 */
